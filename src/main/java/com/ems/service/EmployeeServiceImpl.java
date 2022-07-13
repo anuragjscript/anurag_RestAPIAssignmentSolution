@@ -3,6 +3,8 @@ package com.ems.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.ems.exception.ResourceNotFoundException;
@@ -18,6 +20,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Override
 	public List<Employee> getAllEmployees() {
 		return employeeDao.findAll();
+	}
+	
+	@Override
+	public List<Employee> getAllEmployeeSortedByFirstName(Direction direction) {
+		return employeeDao.findAll(Sort.by(direction, "firstName"));
 	}
 
 	@Override
@@ -37,8 +44,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Override
 	public Employee saveEmployee(Employee employee) {
-		Employee savedEmployee = employeeDao.save(employee);
-		return savedEmployee;
+		return employeeDao.save(employee);
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package com.ems.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -27,13 +28,21 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	
 	private String username;
 	private String password;
 	
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
 	@JoinTable( name = "users_roles",
 				joinColumns = @JoinColumn(name = "user_id"),
 				inverseJoinColumns = @JoinColumn(name = "role_id") )
 	private List<Role> roles;
+	
+	public void addRole(Role role) {
+		if(this.roles == null) {
+			this.roles = new ArrayList<>();
+		}
+		this.addRole(role);
+	}
 
 }

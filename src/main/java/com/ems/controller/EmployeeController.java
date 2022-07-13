@@ -3,6 +3,7 @@ package com.ems.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ems.model.Employee;
@@ -28,6 +30,16 @@ public class EmployeeController {
 	public ResponseEntity<List<Employee>> getAllEmployees() {
 		List<Employee> allEmployees = employeeService.getAllEmployees();
 		return ResponseEntity.ok().body(allEmployees);
+	}
+	
+	@GetMapping("/sort")
+	public ResponseEntity<List<Employee>> getSortedEmployeeList(
+			@RequestParam(value = "order",
+							defaultValue = "ASC",
+							required = false) String sortOrder) {
+		Direction direction = sortOrder.equalsIgnoreCase("DESC") ? Direction.DESC : Direction.ASC;
+		List<Employee> allEmployeeSortedByFirstName = employeeService.getAllEmployeeSortedByFirstName(direction);
+		return ResponseEntity.ok().body(allEmployeeSortedByFirstName);
 	}
 	
 	@GetMapping("/getEmployeeById/{employeeId}")
@@ -58,7 +70,7 @@ public class EmployeeController {
 	@DeleteMapping("/deleteEmployee/{employeeId}")
 	public ResponseEntity<Object> deleteEmployee(@PathVariable Integer employeeId) {
 		employeeService.deleteEmployeeById(employeeId);
-		return ResponseEntity.noContent().build();
+		return ResponseEntity.ok().body("Deleted employee id - " + employeeId);
 	}
 
 }
